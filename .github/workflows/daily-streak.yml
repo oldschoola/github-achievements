@@ -1,0 +1,39 @@
+name: Daily Streak Keeper
+
+# Keeps the GitHub contribution streak alive with a daily commit.
+# Runs every day at 12:00 UTC. Can also be triggered manually.
+#
+# IMPORTANT: This workflow only runs automatically from the DEFAULT BRANCH.
+# Make sure this file is merged into your default branch (master/main).
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # every day at noon UTC
+  workflow_dispatch:         # also allows manual trigger from the Actions tab
+
+jobs:
+  keep-streak:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # needed to push the commit back
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Update activity log
+        run: python scripts/update-streak.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add streak/activity-log.md
+          # Only commit if the file actually changed (idempotent)
+          git diff --staged --quiet || git commit -m "chore: daily activity update $(date -u +'%Y-%m-%d')"
+          git push

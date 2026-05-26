@@ -1,0 +1,29 @@
+name: Daily Streak Keeper
+
+# Keeps the GitHub contribution streak alive using contribution-streak-maintainer.
+# Checks if you already committed today — only commits if you haven't.
+# Runs every day at 22:00 UTC (end of day, so it catches days you were active).
+#
+# REQUIRED SETUP (one-time, manual):
+#   1. Create a GitHub Personal Access Token (classic):
+#      Settings → Developer settings → Personal access tokens → Tokens (classic)
+#      Scopes needed: repo, read:user, user:email  |  Set expiration: No expiration
+#   2. Add it as a repo secret named CSM_GITHUB_TOKEN:
+#      Repo Settings → Secrets and variables → Actions → New repository secret
+
+on:
+  schedule:
+    - cron: '0 22 * * *'   # every day at 22:00 UTC (checks near end of day)
+  workflow_dispatch:         # manual trigger from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  keep-streak:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Maintain contribution streak
+        run: npx contribution-streak-maintainer ${{ github.repository }} --email=1.temp.accoun@gmail.com
+        env:
+          DEVFUL_GITHUB_TOKEN: ${{ secrets.CSM_GITHUB_TOKEN }}

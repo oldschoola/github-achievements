@@ -24,6 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Maintain contribution streak
-        run: npx contribution-streak-maintainer ${{ github.repository }} --email=nutellaelik@gmail.com
+        run: npx contribution-streak-maintainer ${{ github.repository }} --email=f0rm4tm3@gmail.com
         env:
           DEVFUL_GITHUB_TOKEN: ${{ secrets.CSM_GITHUB_TOKEN }}

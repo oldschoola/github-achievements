@@ -40,8 +40,8 @@ for i in $(seq 1 "$COUNT"); do
   PR=$(curl -sf "${HEADERS[@]}" -X POST "$API/repos/$OWNER/$REPO/pulls" \
     -d "{\"title\":\"Pull Shark #$i\",\"head\":\"$BRANCH\",\"base\":\"$DEFAULT_BRANCH\",\"body\":\"Automated PR for Pull Shark achievement.\"}")
 
-  PR_NUMBER=$(echo "$PR" | grep -o '"number":[0-9]*' | head -1 | cut -d: -f2)
-  PR_SHA=$(echo "$PR" | grep -o '"sha":"[^"]*"' | tail -1 | cut -d'"' -f4)
+  PR_NUMBER=$(echo "$PR" | jq -r '.number')
+  PR_SHA=$(echo "$PR" | jq -r '.head.sha')
   echo "Opened PR #$PR_NUMBER — merging..."
 
   curl -sf "${HEADERS[@]}" -X PUT "$API/repos/$OWNER/$REPO/pulls/$PR_NUMBER/merge" \

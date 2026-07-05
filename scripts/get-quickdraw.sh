@@ -14,7 +14,7 @@ echo "Opening issue..."
 ISSUE=$(curl -sf "${HEADERS[@]}" -X POST "$API/repos/$OWNER/$REPO/issues" \
   -d '{"title":"Quickdraw test issue","body":"This issue will be closed immediately for the Quickdraw achievement."}')
 
-ISSUE_NUMBER=$(echo "$ISSUE" | grep -o '"number":[0-9]*' | head -1 | cut -d: -f2)
+ISSUE_NUMBER=$(echo "$ISSUE" | jq -r '.number')
 echo "Created issue #$ISSUE_NUMBER — closing immediately..."
 
 curl -sf "${HEADERS[@]}" -X PATCH "$API/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER" \
